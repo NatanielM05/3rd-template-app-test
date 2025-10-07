@@ -1,25 +1,385 @@
 openapi: 3.0.3
 info:
-  title: Application API
+  title: ToDo Application API
   description: |
-    REST API specification for the application.
+    REST API for a ToDo application with task management, filtering, and categorization.
 
-    **Note for AI Agents**:
-    This file should be generated based on the initial prompt and application requirements.
-    Follow these guidelines when creating the specification:
-    - Define all endpoints needed for the application
-    - Keep schemas in `components/schemas` for reusability
-    - Use consistent naming conventions (PascalCase for schemas, camelCase for properties)
-    - Include proper error responses and security schemes
-    - Add pagination parameters for list endpoints
-    - Document all request/response schemas
+    Features:
+    - Create, read, update, delete tasks
+    - Mark tasks as open/completed
+    - Filter tasks by status, category, or search term
+    - Sort tasks by due date
+    - Categorize tasks with tags
   version: 0.0.1
 
 servers:
-  - url: http://localhost:3000/v1
+  - url: http://localhost:3001/api/v1
     description: Local Development
 
-paths: {}
+security: []
+
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      operationId: healthCheck
+      tags:
+        - System
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2025-10-07T10:30:00Z"
+
+  /tasks:
+    get:
+      summary: List all tasks
+      operationId: listTasks
+      tags:
+        - Tasks
+      parameters:
+        - name: status
+          in: query
+          description: Filter by task status
+          required: false
+          schema:
+            type: string
+            enum: [open, completed]
+        - name: category
+          in: query
+          description: Filter by category
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          description: Search in title and description
+          required: false
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          description: Sort field
+          required: false
+          schema:
+            type: string
+            enum: [dueDate, createdAt, title]
+            default: dueDate
+        - name: sortOrder
+          in: query
+          description: Sort order
+          required: false
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: asc
+      responses:
+        '200':
+          description: List of tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Create a new task
+      operationId: createTask
+      tags:
+        - Tasks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /tasks/{id}:
+    get:
+      summary: Get a task by ID
+      operationId: getTask
+      tags:
+        - Tasks
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    put:
+      summary: Update a task
+      operationId: updateTask
+      tags:
+        - Tasks
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete a task
+      operationId: deleteTask
+      tags:
+        - Tasks
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '204':
+          description: Task deleted successfully
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /tasks/{id}/toggle:
+    patch:
+      summary: Toggle task completion status
+      operationId: toggleTask
+      tags:
+        - Tasks
+      parameters:
+        - $ref: '#/components/parameters/TaskId'
+      responses:
+        '200':
+          description: Task status toggled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
 components:
-  schemas: {}
+  parameters:
+    TaskId:
+      name: id
+      in: path
+      required: true
+      description: Task ID
+      schema:
+        type: string
+        format: uuid
+        example: "123e4567-e89b-12d3-a456-426614174000"
+
+  schemas:
+    Task:
+      type: object
+      required:
+        - id
+        - title
+        - status
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique task identifier
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+          example: "Buy groceries"
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+          example: "Milk, bread, eggs, and coffee"
+        status:
+          type: string
+          enum: [open, completed]
+          description: Task completion status
+          example: "open"
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional task due date
+          example: "2025-10-08T18:00:00Z"
+        category:
+          type: string
+          maxLength: 50
+          description: Optional task category/tag
+          example: "shopping"
+        createdAt:
+          type: string
+          format: date-time
+          description: Task creation timestamp
+          example: "2025-10-07T10:30:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: Task last update timestamp
+          example: "2025-10-07T10:30:00Z"
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+          example: "Buy groceries"
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+          example: "Milk, bread, eggs, and coffee"
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional task due date
+          example: "2025-10-08T18:00:00Z"
+        category:
+          type: string
+          maxLength: 50
+          description: Optional task category/tag
+          example: "shopping"
+
+    UpdateTaskRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Task title
+          example: "Buy groceries"
+        description:
+          type: string
+          maxLength: 1000
+          description: Optional task description
+          example: "Milk, bread, eggs, and coffee"
+        status:
+          type: string
+          enum: [open, completed]
+          description: Task completion status
+          example: "completed"
+        dueDate:
+          type: string
+          format: date-time
+          description: Optional task due date
+          example: "2025-10-08T18:00:00Z"
+        category:
+          type: string
+          maxLength: 50
+          description: Optional task category/tag
+          example: "shopping"
+
+    TaskList:
+      type: object
+      required:
+        - tasks
+        - total
+      properties:
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+          description: Total number of tasks
+          example: 42
+
+    Error:
+      type: object
+      required:
+        - error
+        - message
+      properties:
+        error:
+          type: string
+          description: Error type
+          example: "BadRequest"
+        message:
+          type: string
+          description: Error message
+          example: "Invalid request parameters"
+        details:
+          type: object
+          description: Additional error details
+          additionalProperties: true
+
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "BadRequest"
+            message: "Invalid request parameters"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "NotFound"
+            message: "Task not found"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "InternalServerError"
+            message: "An unexpected error occurred"

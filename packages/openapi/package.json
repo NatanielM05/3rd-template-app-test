@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "echo '⚠️  OpenAPI: No dev mode'",
-    "build": "echo '⚠️  OpenAPI: AI will add build commands'",
-    "test": "echo '⚠️  OpenAPI: AI will add validation'"
+    "build": "redocly bundle openapi.yaml -o dist/openapi.yaml",
+    "validate": "redocly lint openapi.yaml",
+    "test": "pnpm validate"
+  },
+  "devDependencies": {
+    "@redocly/cli": "^1.10.0"
   }
 }

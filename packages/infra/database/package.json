@@ -3,16 +3,26 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "scripts": {
     "dev": "echo '⚠️  Database: No dev mode'",
-    "build": "echo '⚠️  Database: AI will create src/ and add build script'",
-    "test": "echo '⚠️  Database: AI will add tests'",
-    "test:init": "echo '⚠️  Database: AI must implement test:init script (e.g.: tsc && node dist/test-init.js)'"
+    "build": "tsc",
+    "test": "echo '⚠️  Database: No unit tests - use test:init'",
+    "test:init": "tsc && node dist/test-init.js",
+    "clean": "rm -rf dist data"
   },
   "dependencies": {
     "lowdb": "^7.0.1"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0"
+    "@types/node": "^20.0.0",
+    "typescript": "^5.6.0"
   }
 }

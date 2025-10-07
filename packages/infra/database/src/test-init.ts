@@ -27,24 +27,44 @@ async function testInit() {
     await db.init();
     console.log('✅ Database initialized successfully\n');
 
-    // Test 2: Create (example - adapt to your schema)
-    console.log('2️⃣ Testing create operation...');
-    // Note: This is a generic test. KI must adapt to actual schema!
-    // Example: await db.createTask({ title: 'Test Task' });
-    console.log('⚠️  CREATE test skipped - KI must implement based on schema\n');
+    // Test 2: Create Task
+    console.log('2️⃣ Testing createTask()...');
+    const task = await db.createTask({
+      title: 'Test Task',
+      description: 'This is a test task',
+      category: 'testing',
+    });
+    console.log(`✅ Task created with id: ${task.id}\n`);
 
-    // Test 3: Read (example - adapt to your schema)
-    console.log('3️⃣ Testing read operation...');
-    // Example: const tasks = await db.getTasks();
-    console.log('⚠️  READ test skipped - KI must implement based on schema\n');
+    // Test 3: Read Tasks
+    console.log('3️⃣ Testing getTasks()...');
+    const tasks = await db.getTasks();
+    console.log(`✅ Found ${tasks.length} task(s)\n`);
 
-    // Test 4: Delete (example - adapt to your schema)
-    console.log('4️⃣ Testing delete operation...');
-    // Example: await db.deleteTask(task.id);
-    console.log('⚠️  DELETE test skipped - KI must implement based on schema\n');
+    // Test 4: Get Task by ID
+    console.log('4️⃣ Testing getTaskById()...');
+    const foundTask = await db.getTaskById(task.id);
+    if (!foundTask) {
+      throw new Error('Task not found by ID');
+    }
+    console.log(`✅ Task found: ${foundTask.title}\n`);
+
+    // Test 5: Update Task
+    console.log('5️⃣ Testing updateTask()...');
+    await db.updateTask(task.id, { title: 'Updated Test Task' });
+    console.log('✅ Task updated successfully\n');
+
+    // Test 6: Toggle Task
+    console.log('6️⃣ Testing toggleTask()...');
+    const toggledTask = await db.toggleTask(task.id);
+    console.log(`✅ Task toggled to status: ${toggledTask.status}\n`);
+
+    // Test 7: Delete Task
+    console.log('7️⃣ Testing deleteTask()...');
+    await db.deleteTask(task.id);
+    console.log('✅ Task deleted successfully\n');
 
     console.log('✅ All database operations work!');
-    console.log('\n⚠️  NOTE: KI must implement actual CRUD tests based on openapi.yaml schema!');
 
     // Cleanup
     try {

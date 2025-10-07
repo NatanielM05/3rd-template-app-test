@@ -1,0 +1,18 @@
+{
+  "tasks": [
+    {
+      "id": "9fb24665-60e4-4387-b449-41a63855b4b3",
+      "title": "Test TODO App",
+      "description": "Beschreibung Optional 123",
+      "status": "open",
+      "dueDate": "2025-10-08T15:00:00.000Z",
+      "category": "Test",
+      "createdAt": "2025-10-07T14:57:33.240Z",
+      "updatedAt": "2025-10-07T14:57:33.240Z"
+    }
+  ],
+  "_meta": {
+    "version": "1.0.0",
+    "createdAt": "2025-10-07T14:52:37.506Z"
+  }
+}
