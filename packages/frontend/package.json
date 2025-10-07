@@ -1,0 +1,21 @@
+{
+  "name": "@app/frontend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo '⚠️  Frontend: AI will create src/ and add dev script'",
+    "build": "echo '⚠️  Frontend: AI will add build script'",
+    "test": "echo '⚠️  Frontend: AI will add tests'"
+  },
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
+    "vite": "^5.0.0"
+  }
+}

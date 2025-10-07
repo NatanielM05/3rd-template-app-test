@@ -1,0 +1,15 @@
+{
+  "name": "repo-root",
+  "private": true,
+  "packageManager": "pnpm@9",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "setup": "pnpm install && cp .env.example .env.local && echo '✅ Setup complete! Edit .env.local and run: pnpm dev'",
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "validate": "bash scripts/validate-app.sh"
+  },
+  "devDependencies": {}
+}

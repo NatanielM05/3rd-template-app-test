@@ -1,0 +1,14 @@
+{
+  "name": "@app/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo '⚠️  API: AI will create src/ and add dev script'",
+    "build": "echo '⚠️  API: AI will add build script'",
+    "test": "echo '⚠️  API: AI will add tests'"
+  },
+  "dependencies": {
+    "@app/database": "workspace:*"
+  }
+}

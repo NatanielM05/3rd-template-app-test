@@ -1,0 +1,20 @@
+{
+  "name": "@app/routes-portal",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "echo '⚠️  Portal: AI will create src/app/ and add dev script'",
+    "build": "echo '⚠️  Portal: AI will add build script'",
+    "test": "echo '⚠️  Portal: AI will add tests'"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0"
+  }
+}

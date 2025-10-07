@@ -1,0 +1,25 @@
+openapi: 3.0.3
+info:
+  title: Application API
+  description: |
+    REST API specification for the application.
+
+    **Note for AI Agents**:
+    This file should be generated based on the initial prompt and application requirements.
+    Follow these guidelines when creating the specification:
+    - Define all endpoints needed for the application
+    - Keep schemas in `components/schemas` for reusability
+    - Use consistent naming conventions (PascalCase for schemas, camelCase for properties)
+    - Include proper error responses and security schemes
+    - Add pagination parameters for list endpoints
+    - Document all request/response schemas
+  version: 0.0.1
+
+servers:
+  - url: http://localhost:3000/v1
+    description: Local Development
+
+paths: {}
+
+components:
+  schemas: {}
